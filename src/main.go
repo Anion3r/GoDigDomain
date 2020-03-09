@@ -37,7 +37,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr,
 		`GoDigDomain: A Domain Name Burst Tool
 
-Usage: gdd -dn Domain [-dm DNSServer]
+Usage: gdd -dn Domain [-ds DNSServer]
 
 Options:
 `)
