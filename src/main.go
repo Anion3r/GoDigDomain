@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//const DEBUG = true
+const DEBUG = false
 const A uint16 = 0x01
 
 func GetAName(DNSServer, domain string) bool {
