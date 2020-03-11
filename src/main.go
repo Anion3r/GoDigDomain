@@ -1,18 +1,19 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"github.com/miekg/dns"
 	_ "github.com/miekg/dns"
+	"io"
 	"log"
 	"os"
+	"strings"
 )
 
-const DEBUG = true
+//const DEBUG = true
 const A uint16 = 0x01
-
-var Result map[string]string
 
 func GetAName(DNSServer, domain string) bool {
 	msg := new(dns.Msg)
@@ -27,7 +28,7 @@ func GetAName(DNSServer, domain string) bool {
 
 	for _, answer := range in.Answer {
 		if answer.Header().Rrtype == A {
-			Result[answer.(*dns.A).A.String()] = domain
+			fmt.Printf("[+] %s -> %s\n", domain, answer.(*dns.A).A.String())
 		}
 	}
 	return true
@@ -56,9 +57,22 @@ func main() {
 		flag.Usage()
 		return
 	}
-	Result = make(map[string]string)
-	GetAName(*dnsServer, *domain)
-	for ip := range Result {
-		fmt.Printf("[+] %s -> %s\n", Result[ip], ip)
+	f, err := os.Open("E:/GoProject/DNSCheck/dic.txt")
+	if err != nil {
+		log.Fatalf("[x] 读取字典错误：%s", err)
 	}
+	defer f.Close()
+	lines := bufio.NewReader(f)
+	for {
+		line, _, err := lines.ReadLine()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			log.Fatalf("[x] 读取文件错误：%s", err)
+		}
+		domainPrefix := string(line)
+		GetAName(*dnsServer, fmt.Sprintf("%s.%s", strings.TrimPrefix(domainPrefix, "\n\r"), *domain))
+	}
+
 }
