@@ -1,12 +1,19 @@
 # GoDigDomain
 用Go语言编写的域名爆破工具
 
-## Usage 使用方法
+## Usage
 GoDigDomain: A Domain Name Burst Tool
 
-Usage: \
-&emsp;&emsp;gdd -dn Domain \[-ds DNSServer\]
+```
+Usage:
+    gdd -dn Domain
+    [-ds DNSServer]
 
-Options:\
-  &emsp;&emsp;-dn 域名\
-  &emsp;&emsp;-ds DNS服务器 (default "114.114.114.114")
+Options:
+    -dn 域名
+    -ds DNS服务器 (default "114.114.114.114")
+```
+## Todo
+- [ ] 支持多DNS服务器
+- [ ] 支持多线程
+- [ ] 支持获取标题
