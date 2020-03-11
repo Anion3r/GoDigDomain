@@ -57,7 +57,7 @@ func main() {
 		flag.Usage()
 		return
 	}
-	f, err := os.Open("E:/GoProject/DNSCheck/dic.txt")
+	f, err := os.Open("./dict.txt")
 	if err != nil {
 		log.Fatalf("[x] 读取字典错误：%s", err)
 	}
