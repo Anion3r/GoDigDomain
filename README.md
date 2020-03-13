@@ -12,8 +12,10 @@ Usage:
 Options:
     -dn 域名
     -ds DNS服务器 (default "114.114.114.114")
+    -dt 域名字典 (default "./dict.txt")
 ```
 ## Todo
+- [x] 支持指定字典文件
 - [ ] 支持多DNS服务器
 - [ ] 支持多线程
 - [ ] 支持获取标题
