@@ -38,11 +38,19 @@ func usage() {
 	fmt.Fprintf(os.Stderr,
 		`GoDigDomain: A Domain Name Burst Tool
 
-Usage: gdd -dn Domain [-ds DNSServer]
+Usage: gdd -dn Domain [-ds DNSServer] [-dt DictFile]
 
 Options:
 `)
 	flag.PrintDefaults()
+}
+
+func isFileExist(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		return os.IsExist(err)
+	}
+	return true
 }
 
 func main() {
@@ -51,17 +59,28 @@ func main() {
 
 	dnsServer := flag.String("ds", "114.114.114.114", "DNS服务器")
 	domain := flag.String("dn", "", "域名")
+	dict := flag.String("dt", "./dict.txt", "域名字典")
 	flag.Parse()
 
 	if *domain == "" {
 		flag.Usage()
 		return
+	} else if *dict != "" && !isFileExist(*dict) {
+		fmt.Printf("[x] 指定的字典文件 %s 不存在\n", *dict)
+		return
 	}
-	f, err := os.Open("./dict.txt")
+
+	f, err := os.Open(*dict)
 	if err != nil {
-		log.Fatalf("[x] 读取字典错误：%s", err)
+		if DEBUG {
+			log.Fatalf("[x] 打开字典文件错误：%s", err)
+		} else {
+			fmt.Println("[x] 打开字典文件错误。")
+		}
+		return
 	}
 	defer f.Close()
+
 	lines := bufio.NewReader(f)
 	for {
 		line, _, err := lines.ReadLine()
@@ -69,7 +88,12 @@ func main() {
 			if err == io.EOF {
 				break
 			}
-			log.Fatalf("[x] 读取文件错误：%s", err)
+			if DEBUG {
+				log.Fatalf("[x] 读取字典文件错误：%s", err)
+			} else {
+				fmt.Println("[x] 读取字典文件错误。")
+			}
+			return
 		}
 		domainPrefix := string(line)
 		GetAName(*dnsServer, fmt.Sprintf("%s.%s", strings.TrimPrefix(domainPrefix, "\n\r"), *domain))
